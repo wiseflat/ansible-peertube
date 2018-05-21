@@ -17,7 +17,7 @@ cd ansible-peertube
 
 ```
 ssh-keygen -f ssh/id_rsa
-ssh-copy-id -i ssh/id_rsa.pub ubuntu@peertube-01
+ssh-copy-id -i ssh/id_rsa.pub ubuntu@<ip of your server>
 ```
 
 ## Create your ssh/config file
