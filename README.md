@@ -4,7 +4,7 @@ ansible-peertube
 Deploy a [peertube](https://github.com/Chocobozzz/PeerTube) instance in less than 10 minutes.
 I installed it on Ubuntu 18.04 bionic virtual private server.
 
-## Download the project
+Download the project
 
 ```
 $ cd
@@ -15,7 +15,31 @@ $ ansible-galaxy install -f -r requirements.yml
 
 ## Ansible configuration
 
-### Create your private ssh key
+
+Latest Releases Via Apt (Ubuntu)
+
+```
+$ sudo apt-get update
+$ sudo apt-get install software-properties-common
+$ sudo apt-add-repository ppa:Ansible/Ansible
+$ sudo apt-get update
+$ sudo apt-get install Ansible
+```
+
+Latest Releases on Centos
+
+```
+$ sudo yum install epel-release
+$ sudo yum install Ansible
+```
+
+Latest Releases on Mac OSX
+
+```
+$ brew install Ansible
+```
+
+Create your private ssh key
 
 ```
 $ ssh-keygen -f ssh/id_rsa
@@ -42,8 +66,6 @@ The key's randomart image is:
 $ ssh-copy-id -i ssh/id_rsa.pub ubuntu@<ip of your server>
 ```
 
-### Create your ssh/config file
-
 In order to connect through ssh without password (this is a requirement for ansible), you need to create a ssh/config file :
 
 ```
@@ -62,16 +84,14 @@ Host *
 
 ```
 
-### SSH to your server and install some packages
+SSH to your server and install some packages
 
 ```
 $ ssh -F ssh/config peertube-01
 $ sudo apt install python-apt
 ```
 
-### Update your configuration env/group_vars/peertube.yml 
-
-You only need to configure the peertube part of the file
+Update your configuration env/group_vars/peertube.yml. You only need to configure the peertube part of the file
 
 ```
 peertube_version: v1.0.0-beta.4
@@ -101,14 +121,13 @@ peertube_services_twitter_whitelisted: false
 
 ## Create a DNS A record
 
-For generating new letsencrypt certificate, your domain needs to point to your public IP address and a webserver needs to listen on port 80
-
+For generating new letsencrypt certificate, your domain needs to point to your public IP address
 
 ## Deploy peertube
 
 Nginx needs to be set up wihout a https virtualhost the first time because you don't have your letsencrypt certificate yet. 
 
-### Disable the ssl nginx vhost in env/group_vars/peertube.yml
+Disable the ssl nginx vhost in env/group_vars/peertube.yml
 
 
 ```
@@ -119,13 +138,13 @@ nginx_vhosts:
     state: absent
 ```
 
-### Run the default playbook
+Run the default playbook
 
 ```
 $ ansible-playbook site.yml
 ```
 
-### Enable the ssl nginx vhost in env/group_vars/peertube.yml
+Enable the ssl nginx vhost in env/group_vars/peertube.yml
 
 ```
 
@@ -135,13 +154,11 @@ nginx_vhosts:
     state: present
 ```
 
-### Run the nginx playbook
+Run the nginx playbook
 
 ```
 $ ansible-playbook play/nginx.yml
 ```
-
-## Done
 
 Go to your server and reset your admin password
 
@@ -149,7 +166,8 @@ Go to your server and reset your admin password
 $ cd /var/www/peertube/peertube-latest && NODE_CONFIG_DIR=/var/www/peertube/config NODE_ENV=production npm run reset-password -- -u root
 ```
 
-### Now your instance is up you can
+Now your instance is up you can
+===
 
 Subscribe to the mailing list for PeerTube administrators: https://framalistes.org/sympa/subscribe/peertube-admin
 Add you instance to the public PeerTube instances index if you want to: https://instances.peertu.be/
