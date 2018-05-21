@@ -6,9 +6,9 @@ I installed it on Ubuntu 18.04 bionic virtual private server.
 # Download the project
 
 ```
-cd
-git clone https://github.com/wiseflat/ansible-peertube.git
-cd ansible-peertube
+$ cd
+$ git clone https://github.com/wiseflat/ansible-peertube.git
+$ cd ansible-peertube
 ```
 
 # Ansible configuration
@@ -16,8 +16,8 @@ cd ansible-peertube
 ## Create your private ssh key
 
 ```
-ssh-keygen -f ssh/id_rsa
-ssh-copy-id -i ssh/id_rsa.pub ubuntu@<ip of your server>
+$ ssh-keygen -f ssh/id_rsa
+$ ssh-copy-id -i ssh/id_rsa.pub ubuntu@<ip of your server>
 ```
 
 ## Create your ssh/config file
@@ -42,8 +42,8 @@ Host *
 ## SSH to your server and install some packages
 
 ```
-ssh -F ssh/config peertube-01
-sudo apt install python-apt
+$ ssh -F ssh/config peertube-01
+$ sudo apt install python-apt
 ```
 
 ## Update your configuration env/group_vars/peertube.yml 
