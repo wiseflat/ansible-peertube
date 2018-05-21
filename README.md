@@ -1,7 +1,7 @@
 ansible-peertube
 ===
 
-Deploy a peertube instance in less than 10 minutes.
+Deploy a [peertube](https://github.com/Chocobozzz/PeerTube) instance in less than 10 minutes.
 I installed it on Ubuntu 18.04 bionic virtual private server.
 
 ## Download the project
@@ -121,7 +121,7 @@ nginx_vhosts:
 ### Run the default playbook
 
 ```
-ansible-playbook site.yml
+$ ansible-playbook site.yml
 ```
 
 ### Enable the ssl nginx vhost in env/group_vars/peertube.yml
@@ -137,7 +137,7 @@ nginx_vhosts:
 ### Run the nginx playbook
 
 ```
-ansible-playbook play/nginx.yml
+$ ansible-playbook play/nginx.yml
 ```
 
 ## Done
