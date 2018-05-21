@@ -1,0 +1,7 @@
+*.retry
+roles
+tmp
+.DS_Store
+ssh/config
+ssh/id_rsa*
+env/host_vars/peertube-01.yml

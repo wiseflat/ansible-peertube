@@ -1,0 +1,13 @@
+---
+
+- hosts: peertube
+  become: true
+  roles:
+    - geerlingguy.certbot
+  tasks:
+
+    - name: Use certbot to test certificate creation
+      command: /usr/bin/certbot certonly --agree-tos --register-unsafely-without-email --test-cert --renew-by-default --webroot -w /var/www/html/ -d {{ peertube_domain }}
+
+    - name: Use certbot to generate certificate
+      command: /usr/bin/certbot certonly --agree-tos --renew-by-default --register-unsafely-without-email --webroot -w /var/www/html/ -d {{ peertube_domain }}

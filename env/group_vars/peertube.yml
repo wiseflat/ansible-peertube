@@ -1,0 +1,229 @@
+---
+
+# PEERTUBE 
+peertube_version: v1.0.0-beta.4
+peertube_domain: peertube.example.com
+peertube_admin_email: peertube@example.com
+peertube_database_suffix: _prod
+peertube_database_username: peertube
+peertube_database_password: peertube
+
+peertube_smtp_hostname: smtp.example.com
+peertube_smtp_port: 465
+peertube_smtp_username: peertube@example.com
+peertube_smtp_password: "eid2wueRudiv3ToX0oLkjnHy5rT("
+peertube_smtp_tls: true
+peertube_smtp_disable_starttls: false
+peertube_smtp_ca_file: null # Used for self signed certificates
+peertube_smtp_from_address: 'peertube@example.com'
+
+peertube_instance_name: PeerTube
+peertube_instance_short_description: 'PeerTube, a federated (ActivityPub) video streaming platform using P2P (BitTorrent) directly in the web browser with WebTorrent and Angular.'
+peertube_instance_description: ""
+peertube_instance_terms: ""
+peertube_services_twitter_username: '@Chocobozzz'
+peertube_services_twitter_whitelisted: false
+
+
+# CERTBOT
+
+certbot_auto_renew: true
+certbot_auto_renew_user: "{{ ansible_ssh_user }}"
+certbot_auto_renew_hour: 3
+certbot_auto_renew_minute: 30
+
+certbot_install_from_source: no
+certbot_repo: https://github.com/certbot/certbot.git
+certbot_version: master
+certbot_keep_updated: yes
+
+certbot_dir: /opt/certbot
+
+
+# NODEJS 
+
+nodejs_version: "9.x"
+
+# POSTGRESQL
+
+postgresql_databases:
+  - name: "peertube{{ peertube_database_suffix}}"
+
+postgresql_users:
+  - name: "{{ peertube_database_username }}"
+    password: "{{ peertube_database_password }}"
+    encrypted: true
+    db: "peertube{{ peertube_database_suffix}}" 
+
+
+# NGINX
+
+nginx_worker_processes: "4"
+nginx_worker_connections: "1024"
+nginx_multi_accept: "off"
+
+nginx_remove_default_vhost: true
+nginx_vhosts_filename: "default"
+
+nginx_user: "www-data"
+nginx_ppa_use: true
+nginx_ppa_version: stable
+
+nginx_keepalive_timeout: "15"
+nginx_keepalive_requests: "100"
+
+nginx_server_tokens: "off"
+
+nginx_extra_http_options: |
+  client_body_timeout 20s;
+  client_header_timeout 20s;
+  # send_timeout 20s;
+
+  proxy_connect_timeout       300s;
+  proxy_send_timeout          300s;
+  proxy_read_timeout          300s;
+  send_timeout                300s;
+
+  gzip on;
+  gzip_disable "msie6";
+  gzip_vary on;
+  gzip_proxied any;
+  gzip_comp_level 9;
+  gzip_buffers 16 8k;
+  gzip_http_version 1.0;
+  gzip_types text/plain application/json application/xml text/css text/js application/x-javascript;
+
+  limit_req_zone $binary_remote_addr zone=ddos:10m rate=50r/s;
+  limit_req_status 503;
+
+
+nginx_vhosts:
+
+  - listen: 80
+    state: present
+    filename: "{{ peertube_domain }}.conf"
+    server_name: "{{ peertube_domain }}"
+    root: "/var/www/html"
+    index: "index.html"
+    access_log: "/var/log/nginx/{{ peertube_domain }}.access.log main"
+    error_log: "/var/log/nginx/{{ peertube_domain }}.error.log"
+    extra_parameters: |
+
+      access_log /var/log/nginx/{{ peertube_domain }}.access.log;
+      error_log /var/log/nginx/{{ peertube_domain }}.error.log;
+
+      location /.well-known/acme-challenge/ {
+        default_type "text/plain";
+        root /var/www/html;
+      }
+      location / { return 301 https://$host$request_uri; }
+
+  - listen: "443 ssl http2"
+    state: present
+    filename: "{{ peertube_domain }}-ssl.conf"
+    server_name: "{{ peertube_domain }}"
+    root: "/var/www/html"
+    index: "index.html"
+    access_log: "/var/log/nginx/{{ peertube_domain }}-ssl.access.log main"
+    error_log: "/var/log/nginx/{{ peertube_domain }}-ssl.error.log"
+    extra_parameters: |
+
+      access_log /var/log/nginx/{{ peertube_domain }}.access.log;
+      error_log /var/log/nginx/{{ peertube_domain }}.error.log;
+
+
+
+      # For example with certbot (you need a certificate to run https)
+      ssl_certificate      /etc/letsencrypt/live/{{ peertube_domain }}/fullchain.pem;
+      ssl_certificate_key  /etc/letsencrypt/live/{{ peertube_domain }}/privkey.pem;
+
+      # Security hardening (as of 11/02/2018)
+      ssl_protocols TLSv1.2; # TLSv1.3, TLSv1.2 if nginx >= 1.13.0
+      ssl_prefer_server_ciphers on;
+      ssl_ciphers 'ECDHE-ECDSA-AES256-GCM-SHA384:ECDHE-RSA-AES256-GCM-SHA384:ECDHE-ECDSA-CHACHA20-POLY1305:ECDHE-RSA-CHACHA20-POLY1305:ECDHE-ECDSA-AES128-GCM-SHA256:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-ECDSA-AES256-SHA384:ECDHE-RSA-AES256-SHA384:ECDHE-ECDSA-AES128-SHA256:ECDHE-RSA-AES128-SHA256';
+      # ssl_ecdh_curve secp384r1; # Requires nginx >= 1.1.0, not compatible with import-videos script
+      ssl_session_timeout  10m;
+      ssl_session_cache shared:SSL:10m;
+      ssl_session_tickets off; # Requires nginx >= 1.5.9
+      ssl_stapling on; # Requires nginx >= 1.3.7
+      ssl_stapling_verify on; # Requires nginx => 1.3.7
+
+      # Configure with your resolvers
+      # resolver $DNS-IP-1 $DNS-IP-2 valid=300s;
+      # resolver_timeout 5s;
+
+      add_header Strict-Transport-Security "max-age=63072000; includeSubDomains; preload";
+      add_header X-Content-Type-Options nosniff;
+      add_header X-XSS-Protection "1; mode=block";
+      add_header X-Robots-Tag none;
+
+      location ^~ '/.well-known/acme-challenge' {
+        default_type "text/plain";
+        root /var/www/html;
+      }
+
+      location ~ ^/client/(.*\.(js|css|woff2|otf|ttf|woff|eot))$ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+
+        alias /var/www/peertube/peertube-latest/client/dist/$1;
+      }
+
+      location ~ ^/static/(thumbnails|avatars)/(.*)$ {
+        add_header Cache-Control "public, max-age=31536000, immutable";
+
+        alias /var/www/peertube/storage/$1/$2;
+      }
+
+      location / {
+        proxy_pass http://localhost:9000;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+        # Hard limit, PeerTube does not support videos > 4GB
+        client_max_body_size 4G;
+        proxy_connect_timeout       600;
+        proxy_send_timeout          600;
+        proxy_read_timeout          600;
+        send_timeout                600;
+      }
+
+      # Bypass PeerTube webseed route for better performances
+      location /static/webseed {
+        # Clients usually have 4 simultaneous webseed connections, so the real limit is 3MB/s per client
+        limit_rate 800k;
+
+        if ($request_method = 'OPTIONS') {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+          add_header 'Access-Control-Allow-Headers' 'Range,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+          add_header 'Access-Control-Max-Age' 1728000;
+          add_header 'Content-Type' 'text/plain charset=UTF-8';
+          add_header 'Content-Length' 0;
+          return 204;
+        }
+
+        if ($request_method = 'GET') {
+          add_header 'Access-Control-Allow-Origin' '*';
+          add_header 'Access-Control-Allow-Methods' 'GET, OPTIONS';
+          add_header 'Access-Control-Allow-Headers' 'Range,DNT,X-CustomHeader,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type';
+
+          # Don't spam access log file with byte range requests
+          access_log off;
+        }
+
+        alias /var/www/peertube/storage/videos;
+      }
+
+      # Websocket tracker
+      location /tracker/socket {
+        # Peers send a message to the tracker every 15 minutes
+        # Don't close the websocket before this time
+        proxy_read_timeout 1200s;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_http_version 1.1;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header Host $host;
+        proxy_pass http://localhost:9000;
+      }

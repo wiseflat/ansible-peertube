@@ -1,0 +1,7 @@
+---
+
+- import_playbook: play/postgresql.yml
+- import_playbook: play/nodejs.yml
+- import_playbook: play/nginx.yml
+- import_playbook: play/certbot.yml
+- import_playbook: play/peertube.yml

@@ -1,0 +1,6 @@
+---
+
+- hosts: peertube
+  become: true
+  roles:
+    - geerlingguy.nodejs

@@ -1,0 +1,20 @@
+---
+
+# - name: nodejs
+#   src: geerlingguy.nodejs
+
+# - name: postgresql
+#   src: geerlingguy.postgresql
+
+# - name: nginx
+#   src: geerlingguy.nginx
+
+# - name: certbot
+#   src: git+https://github.com/geerlingguy/ansible-role-certbot.git
+
+# - name: yarn
+#   src: ocha.yarn
+#   # git+https://github.com/ocha/ansible-role-yarn.git
+
+- name: wiseflat.peertube
+  src: wiseflat.peertube
