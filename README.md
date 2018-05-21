@@ -14,20 +14,20 @@ $ sudo apt-get update
 $ sudo apt-get install software-properties-common
 $ sudo apt-add-repository ppa:Ansible/Ansible
 $ sudo apt-get update
-$ sudo apt-get install Ansible
+$ sudo apt-get install ansible
 ```
 
 Latest Releases on Centos
 
 ```
 $ sudo yum install epel-release
-$ sudo yum install Ansible
+$ sudo yum install ansible
 ```
 
 Latest Releases on Mac OSX
 
 ```
-$ brew install Ansible
+$ brew install ansible
 ```
 
 Download the project
