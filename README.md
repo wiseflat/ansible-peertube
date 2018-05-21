@@ -120,7 +120,9 @@ nginx_vhosts:
 
 ### Run the default playbook
 
+```
 ansible-playbook site.yml
+```
 
 ### Enable the ssl nginx vhost in env/group_vars/peertube.yml
 
@@ -134,7 +136,9 @@ nginx_vhosts:
 
 ### Run the nginx playbook
 
+```
 ansible-playbook play/nginx.yml
+```
 
 ## Done
 
