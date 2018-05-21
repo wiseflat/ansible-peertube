@@ -4,15 +4,6 @@ ansible-peertube
 Deploy a [peertube](https://github.com/Chocobozzz/PeerTube) instance in less than 10 minutes.
 I installed it on Ubuntu 18.04 bionic virtual private server.
 
-Download the project
-
-```
-$ cd
-$ git clone https://github.com/wiseflat/ansible-peertube.git
-$ cd ansible-peertube
-$ ansible-galaxy install -f -r requirements.yml
-```
-
 ## Ansible configuration
 
 
@@ -37,6 +28,15 @@ Latest Releases on Mac OSX
 
 ```
 $ brew install Ansible
+```
+
+Download the project
+
+```
+$ cd
+$ git clone https://github.com/wiseflat/ansible-peertube.git
+$ cd ansible-peertube
+$ ansible-galaxy install -f -r requirements.yml
 ```
 
 Create your private ssh key
