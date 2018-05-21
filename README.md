@@ -47,7 +47,6 @@ $ ssh-copy-id -i ssh/id_rsa.pub ubuntu@<ip of your server>
 In order to connect through ssh without password (this is a requirement for ansible), you need to create a ssh/config file :
 
 ```
-
 Host peertube-01
     HostName <ip of your server>
 
