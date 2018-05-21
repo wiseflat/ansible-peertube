@@ -17,6 +17,26 @@ $ cd ansible-peertube
 
 ```
 $ ssh-keygen -f ssh/id_rsa
+Generating public/private rsa key pair.
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in ssh/id_rsa.
+Your public key has been saved in ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:v2JKOsla4mkYWv2s/JiDF4oYCIN+aAGrqjAKpozBt2c 
+The key's randomart image is:
++---[RSA 2048]----+
+|                 |
+|.                |
+|o.               |
+|=.               |
+|=.o.    S        |
+|*+..o    .       |
+|XOo=.=.   .      |
+|#+==BEo o  .     |
+|*o++O=oo ..      |
++----[SHA256]-----+
+
 $ ssh-copy-id -i ssh/id_rsa.pub ubuntu@<ip of your server>
 ```
 
